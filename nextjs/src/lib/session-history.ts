@@ -138,8 +138,13 @@ export class AdkSessionService {
 
         const responseData = await response.json();
 
+        // handle case when there are no sessions at all and an empty object is returned {}
+        // note that {} is truthy
+        const rawSessions =
+              responseData.sessions ??
+              (Object.keys(responseData).length === 0 ? [] : responseData);
+
         // Agent Engine sessions API returns sessions with 'name' field, need to extract ID
-        const rawSessions = responseData.sessions || responseData || [];
         const sessions: AdkSession[] = rawSessions.map(
           (session: {
             name?: string;
